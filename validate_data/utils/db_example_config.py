@@ -21,6 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent
 DB_FILE = BASE_DIR / "databases" / "products.db"
 
 products = [
+    # name, category, price, brand
     # Computers
     ("Gamer Laptop", "computers", 1200.00, "Dell"), ("4K Monitor", "computers", 450.00, "Asus"), ("Mechanical Keyboard", "computers", 100.00, "Logitech"),
 
@@ -140,9 +141,9 @@ def get_products_from_sqlite(
     ]
 
     if filters.categories:
-        placeholders = ", ".join(["LOWER(?)"] * len(filters.categories))
+        placeholders = ", ".join(["?"] * len(filters.categories))
         query_sql += f" AND LOWER(category) IN ({placeholders})"
-        sql_params.extend(filters.categories)
+        sql_params.extend([category.lower() for category in filters.categories])
 
     if filters.excluded_brands:
         placeholders = ", ".join(["?"] * len(filters.excluded_brands))
@@ -156,6 +157,9 @@ def get_products_from_sqlite(
     query_sql += " LIMIT ?"
 
     sql_params.append(limit)
+
+    print(f"SQL Query: {query_sql}")
+    print(f"SQL Parameters: {sql_params}")
 
     with sqlite3.connect(DB_FILE) as connection:
         connection.row_factory = sqlite3.Row

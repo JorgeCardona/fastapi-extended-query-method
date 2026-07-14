@@ -18,9 +18,10 @@ LOG_FILE = BASE_DIR / "_uvicorn_test.log"
 TABLE_FORMAT = "rounded_grid"
 
 PAYLOAD = {
-    "categories": [],
-    "max_price": 90.0,
-    "excluded_brands": [],
+    "categories": ['computers', 'furniture', 'sports', 'video games', 'fruits', 'clothing', 'electronics', 'books', 'toys'],
+    "excluded_brands": ['Asus','Logitech'],
+    "min_price": 80.0,
+    "max_price": 10_000,
 }
 
 try:
