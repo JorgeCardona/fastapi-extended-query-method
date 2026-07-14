@@ -1,6 +1,6 @@
 import os
 import uuid
-
+import uvicorn
 from fastapi.responses import JSONResponse
 
 from fastapi import Query
@@ -47,3 +47,14 @@ def health_check():
         "status": "ok",
         "query_saving_cache": app.query_saving_cache,
     }
+
+
+'''
+if __name__ == "__main__":
+    uvicorn.run(
+        "main:app",
+        host="127.0.0.1",
+        port=8000,
+        reload=True,
+    )
+'''
