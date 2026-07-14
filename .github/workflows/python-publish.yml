@@ -51,6 +51,20 @@ jobs:
       - name: List files in dist directory
         run: ls -lR dist
 
+      - name: Inspect wheel contents
+        run: |
+          python - << 'EOF'
+          import glob
+          import zipfile
+
+          wheel = glob.glob("dist/*.whl")[0]
+          print(f"Wheel: {wheel}\n")
+
+          with zipfile.ZipFile(wheel) as z:
+              for name in z.namelist():
+                  print(name)
+          EOF
+
       - name: Zip build and dist directories
         run: zip -r build_dist.zip build/ dist/
 
