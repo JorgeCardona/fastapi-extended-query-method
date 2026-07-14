@@ -40,7 +40,7 @@ Use the **POST** operation in Swagger only for interactive testing.
 Real clients should invoke the QUERY method directly.
 
 <p align="center">
-  <img src="images/swagger.png" alt="Swagger Interface" width="900">
+  <img src="https://raw.githubusercontent.com/JorgeCardona/fastapi-extended-query-method/refs/heads/main/images/swagger.png" alt="Swagger Interface" width="900">
 </p>
 
 ## Cache
@@ -60,7 +60,7 @@ python validate_data/test_api_query_method.py
 ```
 
 <p align="center">
-  <img src="images/api_results.png" alt="API Results" width="900">
+  <img src="https://raw.githubusercontent.com/JorgeCardona/fastapi-extended-query-method/refs/heads/main/images/api_results.png" alt="API Results" width="900">
 </p>
 
 ## Testing Cache
@@ -70,12 +70,12 @@ python validate_data/test_api_query_method.py
 python validate_data/test_cache_comparison.py
 ```
 <p align="center">
-  <img src="images/cache.png" alt="Stored Cache" width="900">
+  <img src="https://raw.githubusercontent.com/JorgeCardona/fastapi-extended-query-method/refs/heads/main/images/cache.png" alt="Stored Cache" width="900">
 </p>
 
 ### NO Using Cache Stored
 <p align="center">
-  <img src="images/no_cache.png" alt="Without Cache" width="900">
+  <img src="https://raw.githubusercontent.com/JorgeCardona/fastapi-extended-query-method/refs/heads/main/images/no_cache.png" alt="Without Cache" width="900">
 </p>
 
 ## License
