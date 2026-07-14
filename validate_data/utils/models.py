@@ -8,10 +8,10 @@ class SearchFilters(BaseModel):
     [ES] Modelo de entrada para los filtros de búsqueda de productos.
     [EN] Input model for product search filters.
     """
-    categories: list[str]
-    max_price: float
-    excluded_brands: list[str]
-
+    categories: list[str] = []
+    excluded_brands: list[str]  = []
+    max_price: float = 10_000
+    min_price: float = 100
 
 class ProductFormat(BaseModel):
     """
