@@ -8,22 +8,6 @@ with open("README.md", "r", encoding="utf-8") as file:
 version = os.getenv("PACKAGE_VERSION", "0.0.1")  # Default to '0.0.7' if not provided
 
 setuptools.setup(
-    name="git-history-analyzer",
-    version=version,  # Use the dynamic version from the environment variable
-    author="Jorge Cardona",
-    description="Generate Reports from Your Repository's Git History",
-    long_description=long_description,
-    long_description_content_type="text/markdown",
-    url="https://github.com/jorgecardona/git-history-analyzer",
-    classifiers=[
-        "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: MIT License",
-        "Operating System :: OS Independent",
-    ],
-    python_requires='>=3.6',
-)
-
-setuptools.setup(
     name="fastapi-extended-query-method",
     version=version,  # Use the dynamic version from the environment variable
     author="Jorge Cardona",

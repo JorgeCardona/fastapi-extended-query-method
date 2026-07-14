@@ -1,4 +1,4 @@
-name: Publish Git History Analyzer Python Package
+name: Publish FastAPI Extended Query Method Python Package
 
 on:
   release:
@@ -20,7 +20,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -28,13 +28,14 @@ jobs:
         run: python -m pip install --upgrade pip
 
       - name: Install setuptools
-        run: pip install setuptools
+        run: pip install --upgrade setuptools
 
       - name: Install wheel
-        run: pip install wheel
+        run: pip install --upgrade wheel
 
       - name: Set package version from release tag
         run: echo "PACKAGE_VERSION=${{ github.event.release.tag_name }}" >> $GITHUB_ENV
+
       - name: Build package
         run: python setup.py sdist bdist_wheel
 
@@ -51,14 +52,14 @@ jobs:
         run: ls -lR dist
 
       - name: Zip build and dist directories
-        run: zip -r build_dist.zip build/ dist/   # Create the zip file
+        run: zip -r build_dist.zip build/ dist/
 
       - name: Upload build artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: python-package  # Artifact name, this is the name you'll see when retrieving the artifact.
-          path: build_dist.zip  # Path to the zip file to upload as the artifact.
-          retention-days: 30  # Specifies how many days the artifact will be retained before it's automatically deleted.
+          name: python-package
+          path: build_dist.zip
+          retention-days: 30
 
   publish:
     needs: build
@@ -68,7 +69,7 @@ jobs:
       - name: Download package artifact
         uses: actions/download-artifact@v4
         with:
-          name: python-package  # Artifact name to download
+          name: python-package
 
       - name: show current directory
         run: pwd
@@ -77,7 +78,7 @@ jobs:
         run: ls -al
 
       - name: Unzip package
-        run: unzip build_dist.zip  # Unzip the downloaded zip file
+        run: unzip build_dist.zip
 
       - name: List files after unzip artifact
         run: ls -al
@@ -89,8 +90,8 @@ jobs:
         run: ls -lR dist
 
       - name: Publish package
-        uses: pypa/gh-action-pypi-publish@v1.5.1
+        uses: pypa/gh-action-pypi-publish@release/v1
         with:
           user: __token__
           password: ${{ secrets.PYPI_API_TOKEN }}
-          packages_dir: ./dist  # Ensure this points to the correct unpacked package directory
+          packages_dir: ./dist
