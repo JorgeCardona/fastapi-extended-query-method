@@ -30,40 +30,58 @@ app = FastAPIWithQueryHttpMethod(query_saving_cache=True)
 
 # 2. Mock Data for quick testing
 MOCK_PRODUCTS = [
-    {"id": 1, "name": "Gaming Laptop", "category": "electronics", "price": 1200.99},
-    {"id": 2, "name": "Smartphone", "category": "electronics", "price": 599.99},
-    {"id": 3, "name": "Bluetooth Headphones", "category": "electronics", "price": 79.90},
-    {"id": 4, "name": "Espresso Machine", "category": "appliances", "price": 150.00},
-    {"id": 5, "name": "Blender", "category": "appliances", "price": 45.50},
-    {"id": 6, "name": "Office Chair", "category": "furniture", "price": 180.00},
+    {"id": 1, "name": "Gaming Laptop", "categories": "electronics", "price": 1200.99},
+    {"id": 2, "name": "Smartphone", "categories": "electronics", "price": 599.99},
+    {"id": 3, "name": "Bluetooth Headphones", "categories": "electronics", "price": 79.90},
+    {"id": 4, "name": "Espresso Machine", "categories": "appliances", "price": 150.00},
+    {"id": 5, "name": "Blender", "categories": "appliances", "price": 45.50},
+    {"id": 6, "name": "Office Chair", "categories": "furniture", "price": 180.00},
 ]
 
 # 3. Pydantic Schemas
-class SearchFilters(BaseModel):
-    category: Optional[str] = None
-    min_price: Optional[float] = None
-    max_price: Optional[float] = None
+from pydantic import BaseModel
 
-class ProductSchema(BaseModel):
+# ---- [ES] MODELOS DE PYDANTIC (ENTRADA Y SALIDA) ----
+# ---- [EN] PYDANTIC MODELS (INPUT AND OUTPUT) ----
+
+class SearchFilters(BaseModel):
+    """
+    [ES] Modelo de entrada para los filtros de búsqueda de productos.
+    [EN] Input model for product search filters.
+    """
+    categories: list[str] = []
+    excluded_brands: list[str]  = []
+    max_price: float = 10_000
+    min_price: float = 100
+
+class ProductFormat(BaseModel):
+    """
+    [ES] Modelo que define la estructura estándar de un producto.
+    [EN] Model defining the standard structure of a product.
+    """
     id: int
     name: str
-    category: str
+    categories: str
     price: float
+    brand: str
+
 
 class SearchResponse(BaseModel):
+    """
+    [ES] Modelo de salida para la respuesta de la búsqueda.
+    [EN] Output model for the search response.
+    """
     status: str
-    execution_id: str
     total_found: int
-    products: List[ProductSchema]
-
+    products: list[ProductFormat]
 
 # 4. Filter function simulating database queries with mock data
 def get_products_from_sqlite(filters: SearchFilters, limit: int, order_by: str):
     results = MOCK_PRODUCTS.copy()
     
     # Apply search filters if they are provided
-    if filters.category:
-        results = [p for p in results if p["category"].lower() == filters.category.lower()]
+    if filters.categories:
+        results = [p for p in results if p["categories"].lower() == filters.categories.lower()]
         
     if filters.min_price is not None:
         results = [p for p in results if p["price"] >= filters.min_price]
@@ -85,6 +103,8 @@ async def filter_products(
     limit: int = Query(default=10, ge=1),
     order_by: str = "id",
 ):
+    
+    print("----------------------------------------------------")
     # Fetch and filter the mock data
     filtered_products = get_products_from_sqlite(
         filters=filters,
@@ -107,7 +127,22 @@ async def filter_products(
     )
 
 
-# 6. Direct startup block
+# 6. Mostrar las rutas registradas
+@app.on_event("startup")
+async def show_routes():
+    print("\n================== REGISTERED ROUTES ==================")
+
+    for route in app.routes:
+        methods = getattr(route, "methods", None)
+        print(
+            f"Path: {route.path}"
+            f"\nMethods: {methods}"
+            f"\nName: {route.name}"
+            f"\nOperation ID: {getattr(route, 'operation_id', None)}"
+            "\n------------------------------------------------------"
+        )
+
+# 7. Direct startup block
 if __name__ == "__main__":
     uvicorn.run(
         "main:app",
