@@ -17,7 +17,6 @@ setuptools.setup(
     url="https://github.com/jorgecardona/fastapi-extended-query-method",
     package_dir={"": "src"},
     py_modules=["fastapi_extended_query_method"],
-    packages=["validate_data"],
     include_package_data=True,
     install_requires=[
         "fastapi>=0.139.0",
