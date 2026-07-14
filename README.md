@@ -16,7 +16,7 @@ pip install fastapi-extended-query-method
 ## Quick Start
 
 ``` python
-from src.fastapi_extended_query_method import FastAPIWithQueryHttpMethod
+from fastapi_extended_query_method import FastAPIWithQueryHttpMethod
 
 app = FastAPIWithQueryHttpMethod(query_saving_cache=True)
 ```
