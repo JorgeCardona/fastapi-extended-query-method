@@ -16,6 +16,8 @@ pip install fastapi-extended-query-method
 ## Quick Start
 
 ``` python
+## main.py
+
 import uuid
 from typing import List, Optional
 import uvicorn
@@ -30,12 +32,12 @@ app = FastAPIWithQueryHttpMethod(query_saving_cache=True)
 
 # 2. Mock Data for quick testing
 MOCK_PRODUCTS = [
-    {"id": 1, "name": "Gaming Laptop", "categories": "electronics", "price": 1200.99},
-    {"id": 2, "name": "Smartphone", "categories": "electronics", "price": 599.99},
-    {"id": 3, "name": "Bluetooth Headphones", "categories": "electronics", "price": 79.90},
-    {"id": 4, "name": "Espresso Machine", "categories": "appliances", "price": 150.00},
-    {"id": 5, "name": "Blender", "categories": "appliances", "price": 45.50},
-    {"id": 6, "name": "Office Chair", "categories": "furniture", "price": 180.00},
+    {"id": 1, "name": "Gaming Laptop", "category": "electronics", "price": 1200.99},
+    {"id": 2, "name": "Smartphone", "category": "electronics", "price": 599.99},
+    {"id": 3, "name": "Bluetooth Headphones", "category": "electronics", "price": 79.90},
+    {"id": 4, "name": "Espresso Machine", "category": "appliances", "price": 150.00},
+    {"id": 5, "name": "Blender", "category": "appliances", "price": 45.50},
+    {"id": 6, "name": "Office Chair", "category": "furniture", "price": 180.00},
 ]
 
 # 3. Pydantic Schemas
@@ -61,7 +63,7 @@ class ProductFormat(BaseModel):
     """
     id: int
     name: str
-    categories: str
+    category: str
     price: float
     brand: str
 
@@ -81,8 +83,8 @@ def get_products_from_sqlite(filters: SearchFilters, limit: int, order_by: str):
     
     # Apply search filters if they are provided
     if filters.categories:
-        results = [p for p in results if p["categories"].lower() == filters.categories.lower()]
-        
+        results = [p for p in results if p["category"].lower() in [c.lower() for c in filters.categories]]
+
     if filters.min_price is not None:
         results = [p for p in results if p["price"] >= filters.min_price]
         
@@ -150,6 +152,11 @@ if __name__ == "__main__":
         port=8000,
         reload=True,
     )
+```
+
+## Start Server
+```
+python main.py
 ```
 
 ## Swagger compatibility
