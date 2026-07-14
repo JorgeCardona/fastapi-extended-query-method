@@ -1,7 +1,7 @@
 import os
 import sys
 import sqlite3
-
+from pathlib import Path
 from validate_data.utils.models import SearchFilters
 
 # -----------------------------------------------------------------------------
@@ -17,7 +17,8 @@ if hasattr(sys.stdout, "reconfigure"):
 if hasattr(sys.stderr, "reconfigure"):
     sys.stderr.reconfigure(encoding="utf-8")
 
-DB_FILE = "validate_data\\utils\\databases\\products.db"
+BASE_DIR = Path(__file__).resolve().parent
+DB_FILE = BASE_DIR / "databases" / "products.db"
 
 products = [
     # Computers
