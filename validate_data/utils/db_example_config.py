@@ -130,20 +130,24 @@ def get_products_from_sqlite(
     query_sql = """
         SELECT id, name, category, price, brand
         FROM products
-        WHERE price <= ?
+        WHERE price >= ?
+          AND price <= ?
     """
 
-    sql_params = [filters.max_price]
+    sql_params = [
+        filters.min_price,
+        filters.max_price,
+    ]
 
     if filters.categories:
-        placeholders = ", ".join(["?"] * len(filters.categories))
-        query_sql += f" AND category IN ({placeholders})"
+        placeholders = ", ".join(["LOWER(?)"] * len(filters.categories))
+        query_sql += f" AND LOWER(category) IN ({placeholders})"
         sql_params.extend(filters.categories)
 
     if filters.excluded_brands:
         placeholders = ", ".join(["?"] * len(filters.excluded_brands))
-        query_sql += f" AND brand NOT IN ({placeholders})"
-        sql_params.extend(filters.excluded_brands)
+        query_sql += f" AND LOWER(brand) NOT IN ({placeholders})"
+        sql_params.extend([brand.lower() for brand in filters.excluded_brands])
 
     allowed_columns = {"id", "price", "name"}
     order_column = order_by if order_by in allowed_columns else "id"
