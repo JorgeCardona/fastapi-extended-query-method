@@ -52,7 +52,7 @@ class FastAPIWithQueryHttpMethod(FastAPI):
 
             return response
 
-    def query(self, path: str, **kwargs: Any) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
+    def query(self, path: str, **kwargs: Any):
         """
         [ES] Decorador para registrar un endpoint que acepte tanto POST como QUERY.
              Se usa POST para que Swagger UI no lo rompa y permita probarlo desde la web,
@@ -62,7 +62,31 @@ class FastAPIWithQueryHttpMethod(FastAPI):
              POST is used so Swagger UI doesn't break and allows testing it from the web,
              and QUERY to support requests with that actual HTTP method.
         """
-        return self.api_route(path, methods=["POST", "QUERY"], **kwargs)
+
+        def decorator(func: Callable[..., Any]) -> Callable[..., Any]:
+            # Ruta visible en Swagger (POST)
+            self.add_api_route(
+                path,
+                func,
+                methods=["POST"],
+                **kwargs,
+            )
+
+            # Ruta real para QUERY (oculta del esquema OpenAPI)
+            query_kwargs = dict(kwargs)
+            query_kwargs.pop("response_model", None)
+            query_kwargs["include_in_schema"] = False
+
+            self.add_api_route(
+                path,
+                func,
+                methods=["QUERY"],
+                **query_kwargs,
+            )
+
+            return func
+
+        return decorator
 
     def openapi(self) -> dict[str, Any]:
         """
